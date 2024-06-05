@@ -1,0 +1,29 @@
+version: "3"
+services:
+    reserva_api:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      container_name: "reserva_api-1"
+      ports:
+        - "5000:5000"
+      environment:
+        DEVELOPMENT_DATABASE_URL: "postgresql+psycopg2://postgres:password@postgis:5432/reservas"
+      depends_on:
+        - postgis
+      volumes:
+        - .:/app
+
+    postgis:
+        image: postgis/postgis:14-3.3
+        restart: unless-stopped
+        volumes:
+        - postgres-data:/var/lib/postgresql/data
+        environment:
+        - POSTGRES_DB=reservas
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=password
+        ports:
+        - 5432:5432
+volumes:
+    postgres-data:
